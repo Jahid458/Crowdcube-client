@@ -33,6 +33,7 @@ async function run() {
     await client.connect();
 
     const database = client.db("crowdcube").collection("campaignList");
+    const database2 = client.db("crowdcube").collection("donationdetails");
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -52,12 +53,30 @@ async function run() {
         res.send(result)
     })
 
+    app.get('/homecampaign', async(req,res) =>{
+        const cursor = database.find().limit(6);
+        const result = await cursor.toArray(); 
+        res.send(result)
+    })
+
+
+
+
     // imageURL,campaignTitle,campaignType,description,minDonation,deadline
 
     app.post('/campaigns',async(req,res)=>{
         const newCampaign = req.body; 
         console.log("Successfully new campaign added", newCampaign); 
         const result = await database.insertOne(newCampaign);
+        res.send(result)
+    })
+
+
+    //donate button details
+    app.post('/donatedetails',async(req,res)=>{
+        const newCampaign = req.body; 
+        console.log("Successfully new campaign & user added", newCampaign); 
+        const result = await database2.insertOne(newCampaign);
         res.send(result)
     })
 
